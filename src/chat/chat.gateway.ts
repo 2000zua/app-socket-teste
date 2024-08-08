@@ -5,7 +5,13 @@ import { UpdateChatDto } from './dto/update-chat.dto';
 import { Server, Socket } from 'socket.io';
 
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: ['http://0.0.0.0:3001', 'http://localhost:3001', 'http://192.168.254.177:3001'], // Permitir o frontend
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
   @WebSocketServer()
@@ -34,14 +40,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 
   handleConnection(client: any, ...args: any[]) {
-    console.log(`Connecteion: ${client}`);
+    console.log(`Connecteion:`);
+    console.log(client.id)
   }
 
+
+  
   @SubscribeMessage('sendMessage')
-  async handleMessage(@MessageBody() data: CreateMessageInput) {
-    const message = await this.chatService.createMessage(data);
-    this.server.to(`room_${data.roomId}`).emit('newMessage', message);
-    return message;
+  async handleMessage(client: Socket, @MessageBody() data: CreateMessageInput) {
+    try {
+      console.log(data);
+      const message = await this.chatService.createMessage(data);
+      this.server.to(`room_${data.roomId}`).emit('newMessage', message);
+  
+      // Emite uma notificação para o destinatário
+      this.server.to(`room_${data.roomId}`).emit('notification', { userId: data.userId });
+
+      return message;
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 
@@ -60,6 +78,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect{
       client.emit('error', 'Room is full');
     }
   }
+
+
 
 }
 

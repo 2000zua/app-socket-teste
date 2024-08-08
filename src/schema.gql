@@ -3,23 +3,12 @@
 # ------------------------------------------------------
 
 type User {
-  """Example field (placeholder)"""
-  id: Int!
-
-  """Example field (placeholder)"""
-  name: String!
-
-  """Example field (placeholder)"""
-  email: String!
-
-  """Example field (placeholder)"""
-  password: String!
-
-  """Example field (placeholder)"""
-  createdAt: DateTime!
-
-  """Example field (placeholder)"""
-  updatedAt: DateTime!
+  id: Int
+  name: String
+  email: String
+  password: String
+  createdAt: DateTime
+  updatedAt: DateTime
 }
 
 """

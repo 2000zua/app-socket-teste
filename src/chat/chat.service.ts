@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMessageInput } from './dto/create-chat.dto';
-import { UpdateChatDto } from './dto/update-chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Room } from '@prisma/client';
 
@@ -36,7 +35,7 @@ export class ChatService {
           include: {}
         }
       }
-  });
+    });
   }
 
   async createMessage(data: CreateMessageInput){
